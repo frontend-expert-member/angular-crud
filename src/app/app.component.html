@@ -1,0 +1,96 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <h3 class="navbar-brand">Angular CRUD Example</h3>
+</nav>
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h3 *ngIf="userIdToUpdate; else create">
+                    Update User for Id: {{userIdToUpdate}}
+                </h3>
+                <ng-template #create>
+                    <h3>Create New User</h3>
+                </ng-template>
+                <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+                    <div class="form-group">
+                        <input type="text" formControlName="firstName" class="form-control" 
+                        [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" maxlength="50" placeholder="First Name"
+                        />
+                        <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                            <div *ngIf="f.firstName.errors.required">FirstName is required</div>
+                            <div *ngIf="f.firstName.errors.minlength">FirstName must be atleast 6 characters</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" formControlName="lastName" class="form-control" 
+                        [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" maxlength="50" placeholder="Last Name"
+                        />
+                        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                            <div *ngIf="f.lastName.errors.required">LastName is required</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" formControlName="email" class="form-control" 
+                        [ngClass]="{ 'is-invalid': submitted && f.email.errors }"  maxlength="50" placeholder="Email Address"
+                        />
+                        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                            <div *ngIf="f.email.errors.required">Email is required</div>
+                            <div *ngIf="f.email.value !== '' && f.email.errors.email">Invalid Email address</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-info" *ngIf="!userIdToUpdate">ADD USER</button>
+                        <button class="btn btn-info" *ngIf="userIdToUpdate">UPDATE</button>
+                        <button class="btn btn-secondary" (click)="backToCreateUser()" *ngIf="userIdToUpdate">Go Back</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="alert">
+            <div *ngIf="statusCode; else processing">
+                <div *ngIf="statusCode === 201" class="alert-success">User added successfully.</div>
+                <div *ngIf="statusCode === 409" class="alert-success">User already exists.</div>
+                <div *ngIf="statusCode === 200" class="alert-success">User updated successfully.</div>
+                <div *ngIf="statusCode === 204" class="alert-success">User deleted successfully.</div>
+                <div *ngIf="statusCode === 500" class="alert-danger">Internal Server Error.</div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h3>User Details</h3>
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>Email</th>
+                        <th colspan="2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of allUsers">
+                        <td>{{user.id}}</td>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td>{{user.email}}</td>
+                        <td>
+                            <button type="button" class="btn btn-info" (click)="editUser(user.id)">Edit</button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger" (click)="deleteUser(user.id)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<footer class="page-footer font-small special-color-dark pt-4">
+    <div class="footer-copyright text-center py-3">
+        <p>&copy; 2019-2020 Company, Inc.</p>
+    </div>
+</footer>
